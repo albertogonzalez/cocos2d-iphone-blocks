@@ -1,0 +1,12 @@
+#ignore system files
+.DS_Store
+
+#ignore build directories
+build/
+
+#ignore user project files
+*.pbxuser
+*.perspectivev3
+*.model2v3
+xcuserdata/
+project.xcworkspace/
