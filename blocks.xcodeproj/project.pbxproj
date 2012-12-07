@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1533BD8016724C650033E254 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 1533BD7F16724C650033E254 /* background.png */; };
 		15EB3F7116724201009A7B49 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15EB3F7016724201009A7B49 /* QuartzCore.framework */; };
 		15EB3F7316724201009A7B49 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15EB3F7216724201009A7B49 /* OpenGLES.framework */; };
 		15EB3F7516724201009A7B49 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15EB3F7416724201009A7B49 /* OpenAL.framework */; };
@@ -136,6 +137,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1533BD7F16724C650033E254 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 		15EB3F6C16724201009A7B49 /* blocks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = blocks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		15EB3F7016724201009A7B49 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		15EB3F7216724201009A7B49 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -472,6 +474,7 @@
 		15EB3F8316724201009A7B49 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1533BD7F16724C650033E254 /* background.png */,
 				15EB3F8416724201009A7B49 /* Default.png */,
 				15EB3F8616724201009A7B49 /* Default-Landscape~ipad.png */,
 				15EB3F8816724201009A7B49 /* fps_images.png */,
@@ -896,6 +899,7 @@
 				15EB3F9916724201009A7B49 /* Icon@2x.png in Resources */,
 				15EB3F9C16724201009A7B49 /* iTunesArtwork in Resources */,
 				15EB40DA16724203009A7B49 /* ChangeLog in Resources */,
+				1533BD8016724C650033E254 /* background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
