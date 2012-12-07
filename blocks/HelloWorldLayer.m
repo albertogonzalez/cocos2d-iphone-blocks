@@ -26,6 +26,7 @@
 
 #define BALL_Z			1
 #define BALL_TAG		3
+#define BALL_SPEED		150
 
 @interface HelloWorldLayer()
 @property (nonatomic, retain) NSMutableArray *blocks;
@@ -34,7 +35,14 @@
 @property (nonatomic) CGFloat playerXMax;
 @property (nonatomic, retain) CCSprite *ball;
 @property (nonatomic) BOOL ballWithPaddle;
+@property (nonatomic) CGPoint ballSpeedVector;
+@property (nonatomic) CGFloat ballXMin;
+@property (nonatomic) CGFloat ballXMax;
+@property (nonatomic) CGFloat ballYMin;
+@property (nonatomic) CGFloat ballYMax;
 @property (nonatomic) CGPoint touchPointPrev;
+
+-(void) initBallSpeedVector;
 @end
 
 
@@ -111,9 +119,13 @@
 		self.ball.position = ccp(self.player.position.x, self.player.position.y + self.ball.contentSize.height);
 		[self addChild:self.ball z:BALL_Z tag:BALL_TAG];
 		self.ballWithPaddle = YES;
-		
+		self.ballXMin = self.ball.contentSize.width/2;
+		self.ballXMax = winSize.width - self.ball.contentSize.width/2;
+		self.ballYMin = -self.ball.contentSize.height;
+		self.ballYMax = winSize.height - self.ball.contentSize.height/2;
 		
 		self.isTouchEnabled = YES;
+		[self scheduleUpdate];
 	}
 	return self;
 }
@@ -131,6 +143,17 @@
 	
 	// don't forget to call "super dealloc"
 	[super dealloc];
+}
+
+- (void) initBallSpeedVector
+{
+	CGPoint speed;
+	speed.x = arc4random() % (BALL_SPEED - BALL_SPEED/4);
+	if ((arc4random()%100) < 50) {
+		speed.x *= -1;
+	}
+	speed.y = sqrtf((BALL_SPEED*BALL_SPEED) - (speed.x*speed.x));
+	self.ballSpeedVector = speed;
 }
 
 - (void) ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -160,6 +183,57 @@
 	}
 	
 	self.touchPointPrev = touchPoint;
+}
+
+- (void) ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	if (self.ballWithPaddle) {
+		[self initBallSpeedVector];
+		self.ballWithPaddle = NO;
+	}
+}
+
+- (void) update:(ccTime)delta
+{
+	if (!self.ballWithPaddle) {
+		// update ball position with speed
+		CGPoint ballPos = self.ball.position;
+		ballPos.x += self.ballSpeedVector.x * delta;
+		ballPos.y += self.ballSpeedVector.y * delta;
+		
+		// check if ball goes out of screen sides
+		if (ballPos.x < self.ballXMin)
+		{
+			ballPos.x = self.ballXMin;
+			CGPoint speedVector = self.ballSpeedVector;
+			speedVector.x = -speedVector.x;
+			self.ballSpeedVector = speedVector;
+		}
+		else if (ballPos.x > self.ballXMax)
+		{
+			ballPos.x = self.ballXMax;
+			CGPoint speedVector = self.ballSpeedVector;
+			speedVector.x = -speedVector.x;
+			self.ballSpeedVector = speedVector;
+		}
+
+		// check if ball gets the top of the screen
+		if (ballPos.y > self.ballYMax)
+		{
+			ballPos.y = self.ballYMax;
+			CGPoint speedVector = self.ballSpeedVector;
+			speedVector.y = -speedVector.y;
+			self.ballSpeedVector = speedVector;
+		}
+		// check if ball gets the bottom of the screen
+		else if (ballPos.y < self.ballYMin)
+		{
+			CCLOG(@"GAME OVER");
+		}
+		
+		[self.ball setPosition:ballPos];
+	}
+	// update ball position
 }
 
 @end
