@@ -44,6 +44,7 @@
 
 - (CGPoint) getNewBallSpeedVector;
 - (BOOL) collideBallWithPaddle;
+- (CCSprite*) collideBallWithBlocks;
 
 @end
 
@@ -163,6 +164,20 @@
 	return CGRectIntersectsRect(self.player.boundingBox, self.ball.boundingBox);
 }
 
+- (CCSprite*) collideBallWithBlocks
+{
+	CCSprite *blockWithBall = nil;
+	
+	for (CCSprite* block in self.blocks) {
+		if (CGRectIntersectsRect(block.boundingBox, self.ball.boundingBox)) {
+			blockWithBall = block;
+			break;
+		}
+	}
+	
+	return blockWithBall;
+}
+
 - (void) ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	UITouch *touch = [touches anyObject];
@@ -224,10 +239,27 @@
 			self.ballSpeedVector = speedVector;
 		}
 
+		CCSprite *block;
 		// if the ball collide with the paddle
 		if ([self collideBallWithPaddle]) {
 			ballPos.y = self.player.position.y + self.ball.contentSize.height;
 			self.ballSpeedVector = [self getNewBallSpeedVector];
+		}
+		// if the ball collide with a block
+		else if ((block = [self collideBallWithBlocks])) {
+			// remove block
+			[self.blocks removeObject:block];
+			[self removeChild:block cleanup:YES];
+			
+			// change ball vector
+			CGPoint speedVector = self.ballSpeedVector;
+			speedVector.y = -speedVector.y;
+			self.ballSpeedVector = speedVector;
+			
+			// if there is no more blocks
+			if (self.blocks.count == 0) {
+				CCLOG(@"YOU WIN!");
+			}
 		}
 		// check if ball gets the top of the screen
 		else if (ballPos.y > self.ballYMax)
