@@ -11,6 +11,29 @@
 #import "AppDelegate.h"
 #import "IntroLayer.h"
 
+@implementation MyNavigationController
+
+// Autorotation (iOS >= 6.0)
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+// Autorotation (iOS >= 6.0)
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskLandscape;
+}
+
+// Autorotation (iOS < 6.0)
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+}
+
+@end
+
+
 @implementation AppController
 
 @synthesize window=window_, navController=navController_, director=director_;
@@ -77,7 +100,7 @@
 
 	
 	// Create a Navigation Controller with the Director
-	navController_ = [[UINavigationController alloc] initWithRootViewController:director_];
+	navController_ = [[MyNavigationController alloc] initWithRootViewController:director_];
 	navController_.navigationBarHidden = YES;
 	
 	// set the Navigation Controller as the root view controller
@@ -89,13 +112,6 @@
 	
 	return YES;
 }
-
-// Supported orientations: Landscape. Customize it for your own needs
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
-}
-
 
 // getting a call, pause the game
 -(void) applicationWillResignActive:(UIApplication *)application
