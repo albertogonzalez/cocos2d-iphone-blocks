@@ -42,7 +42,9 @@
 @property (nonatomic) CGFloat ballYMax;
 @property (nonatomic) CGPoint touchPointPrev;
 
--(void) initBallSpeedVector;
+- (CGPoint) getNewBallSpeedVector;
+- (BOOL) collideBallWithPaddle;
+
 @end
 
 
@@ -145,7 +147,7 @@
 	[super dealloc];
 }
 
-- (void) initBallSpeedVector
+- (CGPoint) getNewBallSpeedVector
 {
 	CGPoint speed;
 	speed.x = arc4random() % (BALL_SPEED - BALL_SPEED/4);
@@ -153,7 +155,12 @@
 		speed.x *= -1;
 	}
 	speed.y = sqrtf((BALL_SPEED*BALL_SPEED) - (speed.x*speed.x));
-	self.ballSpeedVector = speed;
+	return speed;
+}
+
+- (BOOL) collideBallWithPaddle
+{
+	return CGRectIntersectsRect(self.player.boundingBox, self.ball.boundingBox);
 }
 
 - (void) ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -188,7 +195,7 @@
 - (void) ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	if (self.ballWithPaddle) {
-		[self initBallSpeedVector];
+		self.ballSpeedVector = [self getNewBallSpeedVector];
 		self.ballWithPaddle = NO;
 	}
 }
@@ -217,8 +224,13 @@
 			self.ballSpeedVector = speedVector;
 		}
 
+		// if the ball collide with the paddle
+		if ([self collideBallWithPaddle]) {
+			ballPos.y = self.player.position.y + self.ball.contentSize.height;
+			self.ballSpeedVector = [self getNewBallSpeedVector];
+		}
 		// check if ball gets the top of the screen
-		if (ballPos.y > self.ballYMax)
+		else if (ballPos.y > self.ballYMax)
 		{
 			ballPos.y = self.ballYMax;
 			CGPoint speedVector = self.ballSpeedVector;
@@ -231,9 +243,9 @@
 			CCLOG(@"GAME OVER");
 		}
 		
+		// update ball position
 		[self.ball setPosition:ballPos];
 	}
-	// update ball position
 }
 
 @end
