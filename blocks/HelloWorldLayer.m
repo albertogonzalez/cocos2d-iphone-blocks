@@ -24,11 +24,16 @@
 #define PLAYER_Z		1
 #define PLAYER_TAG		2
 
+#define BALL_Z			1
+#define BALL_TAG		3
+
 @interface HelloWorldLayer()
 @property (nonatomic, retain) NSMutableArray *blocks;
 @property (nonatomic, retain) CCSprite *player;
 @property (nonatomic) CGFloat playerXMin;
 @property (nonatomic) CGFloat playerXMax;
+@property (nonatomic, retain) CCSprite *ball;
+@property (nonatomic) BOOL ballWithPaddle;
 @property (nonatomic) CGPoint touchPointPrev;
 @end
 
@@ -40,6 +45,7 @@
 
 @synthesize blocks = _blocks;
 @synthesize player = _player;
+@synthesize ball = _ball;
 
 // Helper class method that creates a Scene with the HelloWorldLayer as the only child.
 +(CCScene *) scene
@@ -100,6 +106,13 @@
 		self.playerXMin = self.player.contentSize.width/2;
 		self.playerXMax = winSize.width - self.player.contentSize.width/2;
 		
+		// ball
+		self.ball = [CCSprite spriteWithFile:@"ball.png"];
+		self.ball.position = ccp(self.player.position.x, self.player.position.y + self.ball.contentSize.height);
+		[self addChild:self.ball z:BALL_Z tag:BALL_TAG];
+		self.ballWithPaddle = YES;
+		
+		
 		self.isTouchEnabled = YES;
 	}
 	return self;
@@ -114,6 +127,7 @@
 	
 	[_blocks release];
 	[_player release];
+	[_ball release];
 	
 	// don't forget to call "super dealloc"
 	[super dealloc];
@@ -138,6 +152,13 @@
 		playerPos.x = self.playerXMax;
 	}
 	[self.player setPosition:playerPos];
+	
+	if (self.ballWithPaddle) {
+		CGPoint ballPos = self.ball.position;
+		ballPos.x = playerPos.x;
+		[self.ball setPosition:ballPos];
+	}
+	
 	self.touchPointPrev = touchPoint;
 }
 
